@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/MoElwekil/gulp4#readme",
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "browser-sync": "^2.27.7",
+    "gulp": "^4.0.2",
+    "gulp-connect-php": "^1.0.3"
   }
 }
