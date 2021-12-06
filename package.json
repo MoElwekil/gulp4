@@ -1,0 +1,25 @@
+{
+  "name": "gulp4",
+  "version": "1.0.0",
+  "description": "Gulp 4 starter code",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoElwekil/gulp4.git"
+  },
+  "keywords": [
+    "Gulp",
+    "4",
+    "starter",
+    "code"
+  ],
+  "author": "Mo Elwekil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MoElwekil/gulp4/issues"
+  },
+  "homepage": "https://github.com/MoElwekil/gulp4#readme"
+}
