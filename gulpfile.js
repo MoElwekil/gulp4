@@ -4,8 +4,9 @@ const browserSync = require('browser-sync');
 const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
 const postcss = require('gulp-postcss');
-const cssNano = require('gulp-cssnano');
+const cssNano = require('cssnano');
 const autoprefixer = require('autoprefixer');
+const gAutoprefixer = require('gulp-autoprefixer');
 const sass = require('gulp-sass')(require('sass'));
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
@@ -46,12 +47,13 @@ function php() {
 }
 
 function css() {
-	return gulp.src("src/styles/sass/**/*.scss")
+	return gulp.src("src/styles/**/*.scss")
 		.pipe(plumber())
 		.pipe(sass({ outputStyle: "compressed" }))
+		.pipe(gAutoprefixer('last 2 versions'))
 		.pipe(concat('min.app.css'))
 		.pipe(gulp.dest('public/styles'))
-		.pipe(postcss([autoprefixer(), cssNano()]))
+
 		.pipe(browserSync.stream());
 }
 
