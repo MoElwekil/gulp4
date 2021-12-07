@@ -9,6 +9,9 @@ const autoprefixer = require('autoprefixer');
 const sass = require('gulp-sass')(require('sass'));
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
+const del = require("del");
+const newer = require("gulp-newer");
+//const imagemin = require("gulp-imagemin");
 
 
 // PHP Server setup
@@ -32,19 +35,23 @@ function browserSyncReload(done) {
 	done();
 }
 
+// Clean
+function clean() {
+	return del(["public/images/"]);
+}
+
 // PHP destination
 function php() {
-	return gulp.src('./src/**/*.php').pipe(gulp.dest('./public'))
+	return gulp.src('src/**/*.php').pipe(gulp.dest('./public'))
 }
 
 function css() {
-	return gulp.src("./src/styles/sass/**/*.scss")
+	return gulp.src("src/styles/sass/**/*.scss")
 		.pipe(plumber())
-		.pipe(sass({ outputStyle: "expanded" }))
-		.pipe(gulp.dest('./public/styles/css/'))
-		.pipe(rename({ suffix: '.min' }))
+		.pipe(sass({ outputStyle: "compressed" }))
+		.pipe(concat('min.app.css'))
+		.pipe(gulp.dest('public/styles'))
 		.pipe(postcss([autoprefixer(), cssNano()]))
-		.pipe(gulp.dest('./public/styles/css/'))
 		.pipe(browserSync.stream());
 }
 
@@ -55,23 +62,35 @@ function scripts() {
 			.src(["./src/scripts/**/*"])
 			.pipe(plumber())
 			.pipe(uglify())
-			.pipe(concat('main.min.js'))
+			.pipe(concat('min.app.js'))
 			// folder only, filename is specified in webpack config
 			.pipe(gulp.dest("./public/scripts/"))
 			.pipe(browserSync.stream())
 	);
 }
 
+// Optimize Images
+function images() {
+	return gulp
+		.src("src/images/**/*")
+		.pipe(gulp.dest("public/images/"));
+}
+
 // Watch files
 function watchFiles() {
 	gulp.watch('src/**/*.php', gulp.series(php, browserSyncReload));
 	gulp.watch('src/**/*.scss', gulp.series(css, browserSyncReload));
-	gulp.watch("./public/scripts/**/*", gulp.series(scripts));
+	gulp.watch("src/scripts/**/*", gulp.series(scripts));
+	gulp.watch("src/images/**/*", gulp.series(images, browserSyncReload));
 }
 
+const js = gulp.series(scripts);
+const build = gulp.series(clean, gulp.parallel(css, images, scripts));
 const watch = gulp.parallel([watchFiles, phpServer]);
 
-exports.default = php();
-exports.default = css();
-exports.default = scripts();
+exports.default = php;
+exports.default = css;
+exports.default = scripts;
+exports.default = images;
 exports.default = watch;
+exports.build = build
